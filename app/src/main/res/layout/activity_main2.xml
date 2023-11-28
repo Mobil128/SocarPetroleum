@@ -26,7 +26,7 @@
                android:layout_height="wrap_content"
                android:id="@+id/bottomNavigationView"
                android:background="@color/asdf_background"
-               android:layout_marginEnd="20dp"
+               android:layout_marginEnd="21dp"
 
                app:itemTextColor="#811010"
                app:labelVisibilityMode="labeled"
