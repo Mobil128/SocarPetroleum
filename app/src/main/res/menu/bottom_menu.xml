@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/olc"
+        android:icon= "@drawable/baseline_list_24"
+        android:title="Son"/>
+
+    <item android:id="@+id/but_ol"
+        android:icon= "@drawable/baseline_list_24"
+        android:title="Bütün"/>
+
+
+    <item android:id="@+id/sifaris"
+        android:icon= "@drawable/gazgolder2"
+        android:title="Yanacaq qəbulu"/>
+
+    <item android:id="@+id/tenz"
+        android:icon= "@drawable/baseline_lock_24"
+        android:title="Hakkında"/>
+
+
+
+
+</menu>
