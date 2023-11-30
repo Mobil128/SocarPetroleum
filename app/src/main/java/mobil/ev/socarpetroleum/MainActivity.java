@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
             ui.setUser_email(tv_login.getText().toString());
             ui.setUser_sifre(tv_sifre.getText().toString());
-            persistantStorage.addProperty("login",ui.user_ydm);
+            persistantStorage.addProperty("login",ui.user_email);
             persistantStorage.addProperty("sifre",ui.user_sifre);
 
             Intent intent = new Intent(getApplicationContext(),Prexod.class);
