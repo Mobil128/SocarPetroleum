@@ -14,6 +14,11 @@
         android:orientation="vertical"
         tools:context=".DirektorActivity">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <LinearLayout
             android:id="@+id/tab2"
             android:layout_width="match_parent"

@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class HamisiFragment extends Fragment {
@@ -37,6 +41,14 @@ public class HamisiFragment extends Fragment {
        v = inflater.inflate(R.layout.fragment_hamisi, container, false);
         init();
         Fireread();
+       RecyclerView recyclerView = v.findViewById(R.id.recyc);
+
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        List<String> dataList = Arrays.asList("");
+        RecycslerAdapter recyclerAdapter=new RecycslerAdapter(dataList);
+        recyclerView.setAdapter(recyclerAdapter);
+
         return v;
     }
 
