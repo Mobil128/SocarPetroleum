@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
+        android:background="#89B8DD"
         android:orientation="vertical"
         tools:context=".DirektorActivity">
 
@@ -49,7 +50,8 @@
             <ListView
                 android:id="@+id/list2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:background="#89B8DD" />
 
         </LinearLayout>
 

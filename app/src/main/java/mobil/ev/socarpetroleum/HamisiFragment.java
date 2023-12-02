@@ -31,6 +31,7 @@ public class HamisiFragment extends Fragment {
     private ListView listViewTab2;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("YDM");
+    DatabaseReference myRef1 = database.getReference("Data");
     View v;
 
 
@@ -53,12 +54,34 @@ public class HamisiFragment extends Fragment {
     }
 
     private void Fireread() {
+        myRef1 = database.getReference("Data").child(UserInfo.getUser_ydm());
+        myRef1.child("yanacaq_sayi").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+
+                }else {yanacaq_sayi= task.getResult().getValue().toString();
+
+                }
+            }
+        });
+        myRef1.child("cen_sayi").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+
+                }else {
+                   cenlerin_sayi= task.getResult().getValue().toString();
+                }
+            }
+        });
 
         myRef = database.getReference("YDM").child(UserInfo.getUser_ydm()).child("DB");
         myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 int dbChıldCount= (int) task.getResult().getChildrenCount();
+
                 String[][] dbArray=new String[dbChıldCount][10];
                 int indexRow=0;
                 for(DataSnapshot ds : task.getResult().getChildren())
@@ -71,7 +94,8 @@ public class HamisiFragment extends Fragment {
                     }
                     indexRow++;
                 }
-                for(int i=dbChıldCount-1;i>0;i--){
+
+                for(int i=dbChıldCount-1;i>(dbChıldCount-100);i--){
                     MyDataModelTab2 modelTab2 = new MyDataModelTab2();
 
                     modelTab2.setTarix(dbArray[i][8]);
