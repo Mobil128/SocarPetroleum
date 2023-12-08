@@ -18,6 +18,7 @@ public class Controller {
 
 
     public static final String TAG = "TAG";
+    public static final String TAG1 = "TAG";
     public static final String WAURL2="https://script.google.com/macros/s/AKfycbxAJxv-ELhEzoWWB776hn_sJDEPkiKalePrwAfZfoBNzeJKJhTt_tQV5PM1i44gVCQgoQ/exec?";
     public  static final String WAURL="https://script.google.com/macros/s/AKfycbxNH1LlBboqRrGPhkwVbeMcSizhMRQ--5_Z5FldAerixKmBqGqlJ1JrwWAa3DmTv4Nh/exec?";
     // EG : https://script.google.com/macros/s/AKfycbwXXXXXXXXXXXXXXXXX/exec?
