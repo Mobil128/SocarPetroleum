@@ -15,8 +15,8 @@
 
         <LinearLayout
             android:id="@+id/ll_start"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_alignParentStart="false"
             android:layout_alignParentTop="false"
             android:layout_alignParentEnd="false"
@@ -76,6 +76,15 @@
             android:layout_height="wrap_content"
             android:onClick="qeydiyyatOl"
             android:text="Qeydiyyat ol" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+
+            android:layout_marginTop="16dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/edit_icon" />
     </LinearLayout>
 
 

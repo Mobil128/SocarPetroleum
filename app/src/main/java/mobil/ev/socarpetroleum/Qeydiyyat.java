@@ -4,6 +4,14 @@ package mobil.ev.socarpetroleum;
 import static android.app.Activity.RESULT_OK;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -11,6 +19,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,17 +34,22 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
+import com.yalantis.ucrop.UCrop;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Qeydiyyat extends AppCompatActivity {
-    private static final int PICK_IMAGE_REQUEST = 1;
+   LinearLayout linearLayout;
+    private static final int GALLERYPICK = 1;
+
     private EditText login,password;
     FirebaseAuth mAuth;
-    ImageView image_icon;
+    ImageView imageView,imageView2;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("in");
+    private Uri ImageUri;
 
 
     @Override
@@ -43,7 +57,7 @@ public class Qeydiyyat extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qeydiyyat);
         init();
-        image_icon.setOnClickListener(new View.OnClickListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 OpenGallery();
@@ -53,21 +67,51 @@ public class Qeydiyyat extends AppCompatActivity {
 
     private void OpenGallery() {
 
-      Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI) ;
-      startActivityForResult(intent,PICK_IMAGE_REQUEST);
+        Intent galleryIntent = new Intent();
+        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent,GALLERYPICK);
 
 
     }
-    @@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK) {
-            final Uri resultUri = UCrop.getOutput(data);
-            if (resultUri != null) {
-                Picasso.get().load(resultUri).transform(new CircleTransform()).into(profileImageView);
+        if(requestCode == GALLERYPICK && resultCode == RESULT_OK && data != null){
+            ImageUri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), ImageUri);
+                Bitmap croppedBitmap = cropToCircle(bitmap);
+                Drawable dr = new BitmapDrawable(getResources(),croppedBitmap);
+                linearLayout.setBackground(dr);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            //imageView2.setImageURI(ImageUri);
         }
+    }
+
+    private Bitmap cropToCircle(Bitmap bitmap) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        Bitmap output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        // TODO: Implement image cropping logic to circle here
+                Canvas canvas = new Canvas(output);
+        int color = Color.RED;
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+
+        int radius = Math.min(width, height) / 2;
+        canvas.drawCircle(width / 2f, height / 2f, radius, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+
+        return output;
     }
 
 
@@ -77,7 +121,9 @@ public class Qeydiyyat extends AppCompatActivity {
        login = (EditText)findViewById(R.id.et_login0) ;
         password = (EditText)findViewById(R.id.et_sifre0) ;
         mAuth= FirebaseAuth.getInstance();
-        image_icon = findViewById(R.id.image_edit);
+        imageView = findViewById(R.id.image_edit);
+        imageView2 = findViewById(R.id.imageView7);
+        linearLayout = findViewById(R.id.ll_start);
     }
     @Override
     public void onStart() {
