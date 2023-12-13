@@ -3,6 +3,7 @@ package mobil.ev.socarpetroleum;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -26,27 +27,39 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Qeydiyyat extends AppCompatActivity {
+    private String downloadImageUrl;
+    private StorageReference ProductImageRef ;
+    private String saveCurrentDate,saveCurrentTime;
+    private String productRandomKey;
+    private ProgressDialog loadingBar;
    LinearLayout linearLayout;
     private static final int GALLERYPICK = 1;
 
     private EditText login,password;
     FirebaseAuth mAuth;
-    ImageView imageView,imageView2;
+    ImageView imageView2;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("in");
     private Uri ImageUri;
@@ -57,7 +70,7 @@ public class Qeydiyyat extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qeydiyyat);
         init();
-        imageView.setOnClickListener(new View.OnClickListener() {
+        imageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 OpenGallery();
@@ -84,7 +97,8 @@ public class Qeydiyyat extends AppCompatActivity {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), ImageUri);
                 Bitmap croppedBitmap = cropToCircle(bitmap);
                 Drawable dr = new BitmapDrawable(getResources(),croppedBitmap);
-                linearLayout.setBackground(dr);
+                imageView2.setImageBitmap(croppedBitmap);
+               // linearLayout.setBackground(dr);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -121,8 +135,8 @@ public class Qeydiyyat extends AppCompatActivity {
        login = (EditText)findViewById(R.id.et_login0) ;
         password = (EditText)findViewById(R.id.et_sifre0) ;
         mAuth= FirebaseAuth.getInstance();
-        imageView = findViewById(R.id.image_edit);
-        imageView2 = findViewById(R.id.imageView7);
+
+        imageView2 = findViewById(R.id.imageView6);
         linearLayout = findViewById(R.id.ll_start);
     }
     @Override
@@ -138,6 +152,7 @@ public class Qeydiyyat extends AppCompatActivity {
         }
     }
     public void qeydiyyatOl(View view) {
+        StoreProductInformation();
         if(!TextUtils.isEmpty(login.getText().toString()) && !TextUtils.isEmpty(password.getText().toString())){
             mAuth.createUserWithEmailAndPassword(login.getText().toString(),password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
@@ -166,5 +181,64 @@ public class Qeydiyyat extends AppCompatActivity {
             });
         }else{Toast.makeText(getApplicationContext(), "Bütün xanaları doldurun", Toast.LENGTH_SHORT).show();}
 
+    }
+    private void StoreProductInformation() {
+
+
+        loadingBar.setTitle("Загрузка данных");
+        loadingBar.setMessage("Пожалуйста, подождите...");
+        loadingBar.setCanceledOnTouchOutside(false);
+        loadingBar.show();
+
+        Calendar calendar = Calendar.getInstance();
+
+        SimpleDateFormat currentDate = new SimpleDateFormat("ddMMyyyy");
+        saveCurrentDate = currentDate.format(calendar.getTime());
+
+        SimpleDateFormat currentTime = new SimpleDateFormat("HHmmss");
+        saveCurrentTime = currentTime.format(calendar.getTime());
+
+        productRandomKey = saveCurrentDate + saveCurrentTime;
+
+        final StorageReference filePath = ProductImageRef.child(ImageUri.getLastPathSegment() + productRandomKey + ".jpg");
+
+        final UploadTask uploadTask = filePath.putFile(ImageUri);
+
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                String message = e.toString();
+                Toast.makeText(Qeydiyyat.this, "Ошибка: " + message, Toast.LENGTH_SHORT).show();
+                loadingBar.dismiss();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(Qeydiyyat.this, "Изображение успешно загружено.", Toast.LENGTH_SHORT).show();
+
+                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if(!task.isSuccessful()){
+                            throw task.getException();
+                        }
+                        downloadImageUrl = filePath.getDownloadUrl().toString();
+                        return filePath.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if(task.isSuccessful()){
+                            downloadImageUrl = task.getResult().toString();
+
+                            Toast.makeText(Qeydiyyat.this, "Фото сохранено", Toast.LENGTH_SHORT).show();
+
+                            // SaveProductInfoToDatabase();
+                            loadingBar.dismiss();
+                        }
+                    }
+                });
+            }
+        });
     }
 }

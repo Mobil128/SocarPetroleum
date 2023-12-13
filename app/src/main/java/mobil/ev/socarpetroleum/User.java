@@ -143,12 +143,12 @@ public void accountOut(View view){
     private void StoreProductInformation() {
 
       
-      loadingBar.setTitle("Загрузка данных");
+        loadingBar.setTitle("Загрузка данных");
         loadingBar.setMessage("Пожалуйста, подождите...");
         loadingBar.setCanceledOnTouchOutside(false);
         loadingBar.show();
 
-       Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
 
         SimpleDateFormat currentDate = new SimpleDateFormat("ddMMyyyy");
         saveCurrentDate = currentDate.format(calendar.getTime());
@@ -160,7 +160,7 @@ public void accountOut(View view){
 
         final StorageReference filePath = ProductImageRef.child(ImageUri.getLastPathSegment() + productRandomKey + ".jpg");
 
-     final UploadTask uploadTask = filePath.putFile(ImageUri);
+        final UploadTask uploadTask = filePath.putFile(ImageUri);
 
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
