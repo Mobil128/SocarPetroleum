@@ -143,7 +143,7 @@ public class User extends AppCompatActivity {
 
         productRandomKey = saveCurrentDate + saveCurrentTime;
 
-        final StorageReference filePath = ProductImageRef.child(ImageUri.getLastPathSegment() + productRandomKey + ".jpg");
+        final StorageReference filePath = ProductImageRef.child("555" + productRandomKey + ".jpg");
 
         final UploadTask uploadTask = filePath.putFile(ImageUri);
 
