@@ -3,9 +3,13 @@ package mobil.ev.socarpetroleum;
 
 import static android.app.Activity.RESULT_OK;
 
+
+
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -27,6 +31,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,11 +42,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.UCrop;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -50,11 +57,11 @@ import java.util.Map;
 
 public class Qeydiyyat extends AppCompatActivity {
     private String downloadImageUrl;
-    private StorageReference ProductImageRef ;
+    private StorageReference ProductImageRef,ProductImageRef2 ;
     private String saveCurrentDate,saveCurrentTime;
     private String productRandomKey;
     private ProgressDialog loadingBar;
-   LinearLayout linearLayout;
+
     private static final int GALLERYPICK = 1;
 
     private EditText login,password;
@@ -98,11 +105,10 @@ public class Qeydiyyat extends AppCompatActivity {
                 Bitmap croppedBitmap = cropToCircle(bitmap);
                 Drawable dr = new BitmapDrawable(getResources(),croppedBitmap);
                 imageView2.setImageBitmap(croppedBitmap);
-               // linearLayout.setBackground(dr);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //imageView2.setImageURI(ImageUri);
+
         }
     }
 
@@ -118,31 +124,29 @@ public class Qeydiyyat extends AppCompatActivity {
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(color);
-
         int radius = Math.min(width, height) / 2;
         canvas.drawCircle(width / 2f, height / 2f, radius, paint);
-
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, 0, 0, paint);
-
         return output;
     }
 
+    public void init() {
 
-
-    public void init(){
-
-       login = (EditText)findViewById(R.id.et_login0) ;
-        password = (EditText)findViewById(R.id.et_sifre0) ;
-        mAuth= FirebaseAuth.getInstance();
-
+        login = (EditText) findViewById(R.id.et_login0);
+        password = (EditText) findViewById(R.id.et_sifre0);
+        mAuth = FirebaseAuth.getInstance();
+        ProductImageRef = FirebaseStorage.getInstance().getReference().child("Product Images");
         imageView2 = findViewById(R.id.imageView6);
-        linearLayout = findViewById(R.id.ll_start);
-    }
+        imageView2.setImageResource(R.drawable.icon_avator);
+        loadingBar = new ProgressDialog(this);
+      }
+
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
+
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser!=null){
 
@@ -150,10 +154,13 @@ public class Qeydiyyat extends AppCompatActivity {
         }else{
             Toast.makeText(this,"İsfadəçi qeydiyyatdan keçməyib",Toast.LENGTH_SHORT).show();
         }
+
     }
+
     public void qeydiyyatOl(View view) {
-        StoreProductInformation();
+
         if(!TextUtils.isEmpty(login.getText().toString()) && !TextUtils.isEmpty(password.getText().toString())){
+            StoreProductInformation();
             mAuth.createUserWithEmailAndPassword(login.getText().toString(),password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -161,7 +168,6 @@ public class Qeydiyyat extends AppCompatActivity {
                         String uid= mAuth.getUid();
                         myRef = myRef.child(uid);
                         Map<String,String> map1=new HashMap<>();
-
                         map1.put("ad","-");
                         map1.put("email",login.getText().toString());
                         map1.put("ydm","664499");
@@ -184,26 +190,24 @@ public class Qeydiyyat extends AppCompatActivity {
     }
     private void StoreProductInformation() {
 
-
         loadingBar.setTitle("Загрузка данных");
         loadingBar.setMessage("Пожалуйста, подождите...");
         loadingBar.setCanceledOnTouchOutside(false);
         loadingBar.show();
-
         Calendar calendar = Calendar.getInstance();
-
         SimpleDateFormat currentDate = new SimpleDateFormat("ddMMyyyy");
         saveCurrentDate = currentDate.format(calendar.getTime());
-
         SimpleDateFormat currentTime = new SimpleDateFormat("HHmmss");
         saveCurrentTime = currentTime.format(calendar.getTime());
-
         productRandomKey = saveCurrentDate + saveCurrentTime;
-
-        final StorageReference filePath = ProductImageRef.child(ImageUri.getLastPathSegment() + productRandomKey + ".jpg");
-
-        final UploadTask uploadTask = filePath.putFile(ImageUri);
-
+        final StorageReference filePath = ProductImageRef.child("555" + productRandomKey + ".jpg");
+        imageView2.setDrawingCacheEnabled(true);
+        imageView2.buildDrawingCache();
+        Bitmap bitmap = ((BitmapDrawable) imageView2.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+        UploadTask uploadTask = filePath.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
@@ -230,11 +234,11 @@ public class Qeydiyyat extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Uri> task) {
                         if(task.isSuccessful()){
                             downloadImageUrl = task.getResult().toString();
-
                             Toast.makeText(Qeydiyyat.this, "Фото сохранено", Toast.LENGTH_SHORT).show();
+                            loadingBar.dismiss();
 
                             // SaveProductInfoToDatabase();
-                            loadingBar.dismiss();
+
                         }
                     }
                 });
