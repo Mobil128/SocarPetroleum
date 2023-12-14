@@ -1,13 +1,7 @@
 package mobil.ev.socarpetroleum;
 
 
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,6 +11,10 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -130,6 +128,7 @@ public void accountOut(View view){
         map1.put("sifre",polzSifre.getText().toString());
         map1.put("tel",polzTel.getText().toString());
         map1.put("vez",UserInfo.getUser_vez());
+
         String[] key = new String[1];
         myRefX.child(UserInfo.getUser_key()).setValue(map1);
         UserInfo.setUser_name(polzAd.getText().toString());

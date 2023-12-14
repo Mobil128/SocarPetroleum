@@ -1,15 +1,9 @@
 package mobil.ev.socarpetroleum;
 
 
-import static android.app.Activity.RESULT_OK;
-
-
-
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -24,14 +18,12 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,8 +37,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
-import com.yalantis.ucrop.UCrop;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -171,6 +161,7 @@ public class Qeydiyyat extends AppCompatActivity {
                         map1.put("ad","-");
                         map1.put("email",login.getText().toString());
                         map1.put("ydm","664499");
+                        map1.put("image", downloadImageUrl);
                         map1.put("vez","User");
                         map1.put("tel","+994");
                         map1.put("id","7");
@@ -219,7 +210,7 @@ public class Qeydiyyat extends AppCompatActivity {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Toast.makeText(Qeydiyyat.this, "Изображение успешно загружено.", Toast.LENGTH_SHORT).show();
-
+               // downloadImageUrl = filePath.getDownloadUrl().toString();
                 uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
                     public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
