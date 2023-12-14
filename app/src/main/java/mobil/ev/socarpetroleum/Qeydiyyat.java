@@ -161,14 +161,14 @@ public class Qeydiyyat extends AppCompatActivity {
                         map1.put("ad","-");
                         map1.put("email",login.getText().toString());
                         map1.put("ydm","664499");
-                        map1.put("image", downloadImageUrl);
+                        map1.put("image", "-");
                         map1.put("vez","User");
                         map1.put("tel","+994");
                         map1.put("id","7");
                         map1.put("sifre",password.getText().toString());
                         myRef.setValue(map1);
-                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                        startActivity(intent);
+                        //  Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                       // startActivity(intent);
 
                     }
                     else{
@@ -203,14 +203,14 @@ public class Qeydiyyat extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 String message = e.toString();
-                Toast.makeText(Qeydiyyat.this, "Ошибка: " + message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(Qeydiyyat.this, "Xata: " + message, Toast.LENGTH_SHORT).show();
                 loadingBar.dismiss();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(Qeydiyyat.this, "Изображение успешно загружено.", Toast.LENGTH_SHORT).show();
-               // downloadImageUrl = filePath.getDownloadUrl().toString();
+                Toast.makeText(Qeydiyyat.this, "Şəkil uğurla saxlanıldl", Toast.LENGTH_SHORT).show();
+                downloadImageUrl = filePath.getDownloadUrl().toString();
                 uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
                     public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -224,8 +224,9 @@ public class Qeydiyyat extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
                         if(task.isSuccessful()){
-                            downloadImageUrl = task.getResult().toString();
-                            Toast.makeText(Qeydiyyat.this, "Фото сохранено", Toast.LENGTH_SHORT).show();
+
+                            downloadImageUrl = filePath.getDownloadUrl().toString();
+                            Toast.makeText(Qeydiyyat.this, "Şəkil saxlanıldı", Toast.LENGTH_SHORT).show();
                             loadingBar.dismiss();
 
                             // SaveProductInfoToDatabase();
