@@ -1,11 +1,11 @@
 package mobil.ev.socarpetroleum;
 
+
+
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +16,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -77,8 +86,38 @@ public class OlcuFragment extends Fragment {
             }
         });
         Fireread();
+        StorageReference httpsReference = FirebaseStorage.getInstance().getReferenceFromUrl(UserInfo.getUser_Sekil());
+        setImage(sexs,httpsReference);
         return v;
 
+    }
+    public final static Bitmap Bytes2Bitmap(byte[] b) {
+        if (b == null) {
+            return null;
+        }/*from w w w.  j a v  a2  s.  c om*/
+        if (b.length != 0) {
+            InputStream is = new ByteArrayInputStream(b);
+            Bitmap bmp = BitmapFactory.decodeStream(is);
+            return bmp;
+        } else {
+            return null;
+        }
+    }
+
+    private void setImage(ImageView sexs, StorageReference httpsReference) {
+        final long ONE_MEGABYTE = 2024 * 2024;
+        httpsReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                // Data for "images/island.jpg" is returns, use this as needed
+                sexs.setImageBitmap(Bytes2Bitmap(bytes));
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
     }
 
     private void init() {
@@ -93,6 +132,8 @@ public class OlcuFragment extends Fragment {
         saxla = (ImageView) v.findViewById(R.id.saxla);
         yenile = (ImageView) v.findViewById(R.id.yenile);
         sexs = (ImageView) v.findViewById(R.id.imageView);
+        sexs.setImageResource(R.drawable.icon_avator);
+
 
 
 

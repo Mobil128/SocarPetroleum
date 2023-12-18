@@ -43,7 +43,7 @@
         android:layout_marginStart="32dp"
 
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="38dp"
         android:layout_marginRight="15dp"
         android:ems="10"
@@ -94,7 +94,8 @@
         android:layout_marginStart="45dp"
         android:layout_marginTop="20dp"
         android:text="Şifrəni unutdum"
-        android:textColor="#0000FF" />
+        android:textColor="#0000FF"
+        android:visibility="gone"/>
 
     <CheckBox
         android:id="@+id/checkBox2"
@@ -104,14 +105,15 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="7dp"
         android:layout_marginEnd="45dp"
-        android:text="Yadda saxla" />
+        android:text="Yadda saxla"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/button3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="0dp"
+        android:layout_below="@+id/et_sifre"
+        android:layout_marginTop="30dp"
         android:background="#6748DF"
         android:onClick="Start"
         android:text="Hesaba daxil ol"
@@ -121,10 +123,10 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button3"
+        android:layout_below="@+id/button3"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginBottom="19dp"
+        android:layout_marginStart="47dp"
+        android:layout_marginTop="35dp"
         android:text="Hesabnız yoxdur?"
         android:textSize="14dp" />
 
@@ -132,10 +134,11 @@
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button3"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="19dp"
+        android:layout_below="@+id/button3"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="49dp"
+        android:layout_toEndOf="@+id/textView4"
         android:onClick="Qeydiyyat"
         android:text="Qeydiyyat"
         android:textColor="#0000FF"

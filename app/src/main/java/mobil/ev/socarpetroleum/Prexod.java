@@ -74,6 +74,8 @@ public class Prexod extends AppCompatActivity {
                  ui.setUser_name(postSnapshot.child("ad").getValue().toString());
                  ui.setUser_vez(postSnapshot.child("vez").getValue().toString());
                  ui.setUser_ydm(postSnapshot.child("ydm").getValue().toString());
+                 ui.setUser_email(postSnapshot.child("email").getValue().toString());
+                 ui.setUser_sifre(postSnapshot.child("sifre").getValue().toString());
                  ui.setUser_key(postSnapshot.getKey());
                  login(UserInfo.getUser_vez());
 

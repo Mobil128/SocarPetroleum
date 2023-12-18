@@ -164,7 +164,7 @@ public class Qeydiyyat extends AppCompatActivity {
                         map1.put("image", "-");
                         map1.put("vez","User");
                         map1.put("tel","+994");
-                        map1.put("id","7");
+                        map1.put("id","1");
                         map1.put("sifre",password.getText().toString());
                         myRef.setValue(map1);
                         //  Intent intent = new Intent(getApplicationContext(),MainActivity.class);

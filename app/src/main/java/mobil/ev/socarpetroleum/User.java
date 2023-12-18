@@ -167,6 +167,7 @@ public class User extends AppCompatActivity {
         map1.put("tel",polzTel.getText().toString());
         map1.put("vez",UserInfo.getUser_vez());
         map1.put("sekil", downloadImageUrl);
+        map1.put("email",UserInfo.getUser_email());
         String[] key = new String[1];
         myRefX.child(UserInfo.getUser_key()).setValue(map1);
         UserInfo.setUser_Sekil(downloadImageUrl);
@@ -196,12 +197,12 @@ public class User extends AppCompatActivity {
 
         productRandomKey = saveCurrentDate + saveCurrentTime;
 
-        final StorageReference filePath = ProductImageRef.child("555" + productRandomKey + ".jpg");
+        final StorageReference filePath = ProductImageRef.child("555" + productRandomKey + ".png");
         UserImage.setDrawingCacheEnabled(true);
         UserImage.buildDrawingCache();
         Bitmap bitmap = ((BitmapDrawable) UserImage.getDrawable()).getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] data = baos.toByteArray();
 
         final UploadTask uploadTask = filePath.putBytes(data);
