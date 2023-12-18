@@ -196,7 +196,7 @@ public class Qeydiyyat extends AppCompatActivity {
         imageView2.buildDrawingCache();
         Bitmap bitmap = ((BitmapDrawable) imageView2.getDrawable()).getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] data = baos.toByteArray();
         UploadTask uploadTask = filePath.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {
