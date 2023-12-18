@@ -4,6 +4,9 @@ public class UserInfo {
     public UserInfo() {
     }
 
+
+
+    public static String sekil;
     public static String user_tel;
     public static String user_id;
     public static String user_name;
@@ -12,6 +15,16 @@ public class UserInfo {
     public static String user_key;
     public static String user_ydm;
     public static String user_email;
+
+
+
+    public static String getUser_Sekil() {
+        return sekil;
+    }
+
+    public static void setUser_Sekil(String sekil) {
+        UserInfo.sekil = sekil;
+    }
     public static void setUser_email(String user_email) {
         UserInfo.user_email = user_email;
     }
