@@ -263,7 +263,7 @@ public class OlcuFragment extends Fragment {
     }
 
     private void Fireread(){
-        myRef = database.getReference("Data").child(UserInfo.getUser_ydm());
+        myRef = database.getReference("Data1").child(UserInfo.getUser_ydm());
         myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {

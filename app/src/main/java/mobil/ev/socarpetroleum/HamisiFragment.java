@@ -1,16 +1,15 @@
 package mobil.ev.socarpetroleum;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -31,7 +30,7 @@ public class HamisiFragment extends Fragment {
     private ListView listViewTab2;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("YDM");
-    DatabaseReference myRef1 = database.getReference("Data");
+    DatabaseReference myRef1 = database.getReference("Data1");
     View v;
 
 
@@ -54,7 +53,7 @@ public class HamisiFragment extends Fragment {
     }
 
     private void Fireread() {
-        myRef1 = database.getReference("Data").child(UserInfo.getUser_ydm());
+        myRef1 = database.getReference("Data1").child(UserInfo.getUser_ydm());
         myRef1.child("yanacaq_sayi").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
