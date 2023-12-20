@@ -146,36 +146,39 @@ public class Qeydiyyat extends AppCompatActivity {
         }
 
     }
+    public void saveProduction(){
+        mAuth.createUserWithEmailAndPassword(login.getText().toString(),password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()) {
+                    String uid= mAuth.getUid();
+                    myRef = myRef.child(uid);
+                    Map<String,String> map1=new HashMap<>();
+                    map1.put("ad","-");
+                    map1.put("email",login.getText().toString());
+                    map1.put("ydm","664499");
+                    map1.put("sekil", downloadImageUrl);
+                    map1.put("vez","User");
+                    map1.put("tel","+994");
+                    map1.put("id","1");
+                    map1.put("sifre",password.getText().toString());
+                    myRef.setValue(map1);
+                    //  Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                    // startActivity(intent);
 
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Qeydiyyat kecmədi", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
     public void qeydiyyatOl(View view) {
 
         if(!TextUtils.isEmpty(login.getText().toString()) && !TextUtils.isEmpty(password.getText().toString())){
             StoreProductInformation();
-            mAuth.createUserWithEmailAndPassword(login.getText().toString(),password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()) {
-                        String uid= mAuth.getUid();
-                        myRef = myRef.child(uid);
-                        Map<String,String> map1=new HashMap<>();
-                        map1.put("ad","-");
-                        map1.put("email",login.getText().toString());
-                        map1.put("ydm","664499");
-                        map1.put("image", "-");
-                        map1.put("vez","User");
-                        map1.put("tel","+994");
-                        map1.put("id","1");
-                        map1.put("sifre",password.getText().toString());
-                        myRef.setValue(map1);
-                        //  Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                       // startActivity(intent);
 
-                    }
-                    else{
-                        Toast.makeText(getApplicationContext(), "Qeydiyyat kecmədi", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
         }else{Toast.makeText(getApplicationContext(), "Bütün xanaları doldurun", Toast.LENGTH_SHORT).show();}
 
     }
@@ -210,7 +213,7 @@ public class Qeydiyyat extends AppCompatActivity {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Toast.makeText(Qeydiyyat.this, "Şəkil uğurla saxlanıldl", Toast.LENGTH_SHORT).show();
-                downloadImageUrl = filePath.getDownloadUrl().toString();
+
                 uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
                     public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -225,11 +228,11 @@ public class Qeydiyyat extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Uri> task) {
                         if(task.isSuccessful()){
 
-                            downloadImageUrl = filePath.getDownloadUrl().toString();
+                            downloadImageUrl = task.getResult().toString();
                             Toast.makeText(Qeydiyyat.this, "Şəkil saxlanıldı", Toast.LENGTH_SHORT).show();
                             loadingBar.dismiss();
 
-                            // SaveProductInfoToDatabase();
+                             saveProduction();
 
                         }
                     }
