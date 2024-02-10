@@ -69,7 +69,7 @@ public class OlcuFragment extends Fragment {
             public void onClick(View view) {
                 AlertDialog.Builder builder =new  AlertDialog.Builder( getContext());
                 builder.setTitle("Cənlərdə qalan boş yer")
-                        .setMessage("Ai92-"+(150000-bos_yer_s[0])+"\n"+"Dizel-"+(100000-bos_yer_s[0])+"\n"+"Premium-"+(25000-bos_yer_s[0]))
+                        .setMessage("Ai92-"+(150000-bos_yer_s[0])+"\n"+"Dizel-"+(100000-bos_yer_s[1])+"\n"+"Premium-"+(25000-bos_yer_s[2]))
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int i) {
