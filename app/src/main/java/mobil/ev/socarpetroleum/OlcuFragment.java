@@ -303,6 +303,7 @@ public class OlcuFragment extends Fragment {
 
         myRef = database.getReference("YDM").child(UserInfo.getUser_ydm()).child("line");
         myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            int inn=0;
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 DataSnapshot dss =task.getResult();
@@ -320,6 +321,8 @@ public class OlcuFragment extends Fragment {
                         model.setHecmi(dss.child(String.valueOf(index)).getValue().toString());
                         if(say_n1==Integer.parseInt(yan_novu_sayi[say_n])){
                             model.setCemi(dss.child(String.valueOf(col3)).getValue().toString());
+                            bos_yer_s[inn]= Integer.parseInt(dss.child(String.valueOf(col3)).getValue().toString());
+                            inn++;
                         }
                         list.add(model);
                         index++;}}
