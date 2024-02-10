@@ -304,6 +304,8 @@ public class OlcuFragment extends Fragment {
         myRef = database.getReference("YDM").child(UserInfo.getUser_ydm()).child("line");
         myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             int inn=0;
+            int inn2=0;
+
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 DataSnapshot dss =task.getResult();
