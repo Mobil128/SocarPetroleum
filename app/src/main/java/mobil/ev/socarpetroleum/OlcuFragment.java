@@ -2,6 +2,8 @@ package mobil.ev.socarpetroleum;
 
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,7 +40,7 @@ import java.util.Map;
 
 
 public class OlcuFragment extends Fragment {
-    ImageView hesabla,saxla,yenile,sexs;
+    ImageView hesabla,saxla,yenile,sexs,bos_yer;
     String date_n="";
     String hesablanan[][]=new String[20][20];
     boolean saxlanib_he_yox=false;
@@ -61,6 +63,23 @@ public class OlcuFragment extends Fragment {
         // Inflate the layout for this fragment
        v = inflater.inflate(R.layout.fragment_olcu, container, false);
         init();
+        bos_yer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder =new  AlertDialog.Builder( getContext());
+                builder.setTitle("Cənlərdə qalan boş yer")
+                        .setMessage("Ai92")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int i) {
+                                dialog.dismiss();
+                            }
+                        });
+                 AlertDialog dialog = builder.create();
+                 dialog.show();
+
+            }
+        });
         hesabla.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,6 +140,7 @@ public class OlcuFragment extends Fragment {
     }
 
     private void init() {
+        bos_yer=(ImageView) v.findViewById(R.id.bos_yer);
         tv_tarix=(TextView)v.findViewById(R.id.Tarix);
         tv_olcu_aparan=(TextView)v.findViewById(R.id.olcu_sexs);
         tv_ydm = (TextView)v.findViewById(R.id.tv_ydm) ;
