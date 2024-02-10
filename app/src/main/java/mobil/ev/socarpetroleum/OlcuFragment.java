@@ -40,6 +40,7 @@ import java.util.Map;
 
 
 public class OlcuFragment extends Fragment {
+    int[] bos_yer_s= new int[10];
     ImageView hesabla,saxla,yenile,sexs,bos_yer;
     String date_n="";
     String hesablanan[][]=new String[20][20];
@@ -68,7 +69,7 @@ public class OlcuFragment extends Fragment {
             public void onClick(View view) {
                 AlertDialog.Builder builder =new  AlertDialog.Builder( getContext());
                 builder.setTitle("Cənlərdə qalan boş yer")
-                        .setMessage("Ai92")
+                        .setMessage("Ai92-"+(150000-bos_yer_s[0])+"\n"+"Dizel-"+(100000-bos_yer_s[0])+"\n"+"Premium-"+(25000-bos_yer_s[0]))
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int i) {
@@ -197,6 +198,7 @@ public class OlcuFragment extends Fragment {
                     //Log.i("cemi",String.valueOf(index2)+";"+hesablanan[index][3]);
                     textView =(TextView)v.findViewById(R.id.tv_cemi) ;
                     textView.setText(hesablanan[index2][3]);
+                    bos_yer_s[index2]= Integer.parseInt(hesablanan[index2][3]);
                     index2++;
                 }
                 index++;

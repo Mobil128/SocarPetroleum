@@ -11,8 +11,8 @@ android {
         applicationId "mobil.ev.socarpetroleum"
         minSdk 21
         targetSdk 33
-        versionCode 41
-        versionName "Version41"
+        versionCode 43
+        versionName "Version43"
         viewBinding.enabled true
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
