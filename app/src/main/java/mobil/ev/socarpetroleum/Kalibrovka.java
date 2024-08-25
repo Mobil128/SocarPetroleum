@@ -39,7 +39,7 @@ public class Kalibrovka {
         if(ydm.equals("12")){
             kal111=kal12;
         }
-        if(ydm.equals("2")){
+        if(ydm.equals("22")){
             kal111=kal2;
         }
        if (cen_id<(cenlerin_sayi-lpg_count)) {
