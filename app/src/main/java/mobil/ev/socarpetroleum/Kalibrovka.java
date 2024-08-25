@@ -66,7 +66,7 @@ public class Kalibrovka {
         double dob =Double.parseDouble(metrostok);
 
           double dob2=dob-round;
-        int round2=(int)(dob2*10);
+        int round2=(int)Math.round(dob2*10);
         return round2;
     }
 
