@@ -146,7 +146,7 @@ public class OlcuFragment extends Fragment {
     }
 
     private void init() {
-        mediaPlayer = MediaPlayer.create(getContext(), R.raw.sso);
+        mediaPlayer = MediaPlayer.create(getContext(), R.raw.ssoo);
         imv =(ImageView) v.findViewById(R.id.chhht);
         bos_yer=(ImageView) v.findViewById(R.id.bos_yer);
         tv_tarix=(TextView)v.findViewById(R.id.Tarix);
