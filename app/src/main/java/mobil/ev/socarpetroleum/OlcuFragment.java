@@ -7,10 +7,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -55,8 +58,9 @@ public class OlcuFragment extends Fragment {
     String cenlerin_sayi="1";String yanacaq_sayi="1";
     String[] yan_novu = new String[10];
     String[] yan_novu_sayi =new String[10];
+    MediaPlayer mediaPlayer;
 
-
+    ImageView  imv;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,6 +68,7 @@ public class OlcuFragment extends Fragment {
         // Inflate the layout for this fragment
        v = inflater.inflate(R.layout.fragment_olcu, container, false);
         init();
+
         bos_yer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -141,6 +146,8 @@ public class OlcuFragment extends Fragment {
     }
 
     private void init() {
+        mediaPlayer = MediaPlayer.create(getContext(), R.raw.sso);
+        imv =(ImageView) v.findViewById(R.id.chhht);
         bos_yer=(ImageView) v.findViewById(R.id.bos_yer);
         tv_tarix=(TextView)v.findViewById(R.id.Tarix);
         tv_olcu_aparan=(TextView)v.findViewById(R.id.olcu_sexs);
@@ -270,8 +277,40 @@ public class OlcuFragment extends Fragment {
         myRef.push().setValue(map);
         myRefX.push().setValue(map1);
 
-        Toast.makeText(getContext(),"Saxlandı", Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(getContext(),"Saxlandı", Toast.LENGTH_SHORT).show();
+        AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
+        fadeIn.setDuration(500);
 
+// Анимация исчезновения
+        AlphaAnimation fadeOut = new AlphaAnimation(1.0f, 0.0f);
+        fadeOut.setStartOffset(2300); // задержка перед началом исчезновения
+        fadeOut.setDuration(500);
+
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {}
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                imv.setVisibility(View.GONE); // Скрыть ImageView после завершения анимации
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+        });
+      /*  mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
+            }
+        });*/
+
+        imv.setVisibility(View.VISIBLE);
+        imv.startAnimation(fadeIn);
+        imv.startAnimation(fadeOut);
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
+        }
 
     }
     public void User() {
