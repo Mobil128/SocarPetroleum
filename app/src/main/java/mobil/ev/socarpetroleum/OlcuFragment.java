@@ -181,7 +181,7 @@ public class OlcuFragment extends Fragment {
 
         Kalibrovka kalibrovka= new Kalibrovka();
         View v;
-        View v2;
+        View v3;
         CheckBox checkBox;
         EditText et;
         int index=0;int index2= 0;
