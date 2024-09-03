@@ -11,6 +11,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +82,7 @@ public class OlcuFragment extends Fragment {
             public void onClick(View view) {
                 AlertDialog.Builder builder =new  AlertDialog.Builder( getContext());
                 builder.setTitle("Cənlərdə qalan boş yer")
-                        .setMessage("Ai92-"+(150000-bos_yer_s[0])+"\n"+"Dizel-"+(100000-bos_yer_s[1])+"\n"+"Premium-"+(25000-bos_yer_s[2])+"\n"+"Super-"+(15000-bos_yer_s[3])+"\n"+"LPG-"+(30000-bos_yer_s[4]))
+                        .setMessage("Ai92-"+(150000-bos_yer_s[0])+"\n"+"Dizel-"+(100000-bos_yer_s[1])+"\n"+"Premium-"+(25000-bos_yer_s[2])+"\n"+"Super-"+(10000-bos_yer_s[3])+"\n"+"LPG-"+(30000-bos_yer_s[4]))
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int i) {
@@ -147,11 +148,12 @@ public class OlcuFragment extends Fragment {
         return file;
     }
 
-    private void shareImageOnWhatsApp(File file) {
+    private void shareImageOnWhatsApp(File file,String message) {
         Uri uri = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".provider", file);
 
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("image/*");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, message);
         shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
         shareIntent.setPackage("com.whatsapp");
 
@@ -225,7 +227,8 @@ public class OlcuFragment extends Fragment {
 
             try {
                 File file = saveBitmapToFile(screenshot);
-                shareImageOnWhatsApp(file);
+                String message = "Cənlərdə qalan boş yer"+"\n"+"Ai92-"+(150000-bos_yer_s[0])+"\n"+"Dizel-"+(100000-bos_yer_s[1])+"\n"+"Premium-"+(25000-bos_yer_s[2])+"\n"+"Super-"+(10000-bos_yer_s[3])+"\n"+"LPG-"+(30000-bos_yer_s[4]);
+                shareImageOnWhatsApp(file,message);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -338,29 +341,34 @@ public class OlcuFragment extends Fragment {
         myRefX.push().setValue(map1);
 
       //  Toast.makeText(getContext(),"Saxlandı", Toast.LENGTH_SHORT).show();
-        if (mediaPlayer != null) {
-            mediaPlayer.start();
-        }
-        AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
-        fadeIn.setDuration(500);
+
+        Handler handler = new Handler();
+
+// Используем метод postDelayed для задержки кода
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Код, который будет выполнен с задержкой
+                AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
+                fadeIn.setDuration(500);
 
 // Анимация исчезновения
-        AlphaAnimation fadeOut = new AlphaAnimation(1.0f, 0.0f);
-        fadeOut.setStartOffset(2300); // задержка перед началом исчезновения
-        fadeOut.setDuration(500);
+                AlphaAnimation fadeOut = new AlphaAnimation(1.0f, 0.0f);
+                fadeOut.setStartOffset(2300); // задержка перед началом исчезновения
+                fadeOut.setDuration(500);
 
-        fadeOut.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {}
+                fadeOut.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {}
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                imv.setVisibility(View.GONE); // Скрыть ImageView после завершения анимации
-            }
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        imv.setVisibility(View.GONE); // Скрыть ImageView после завершения анимации
+                    }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {}
-        });
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {}
+                });
       /*  mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
@@ -368,12 +376,17 @@ public class OlcuFragment extends Fragment {
             }
         });*/
 
-        imv.setVisibility(View.VISIBLE);
-        imv.startAnimation(fadeIn);
-        imv.startAnimation(fadeOut);
-        if (mediaPlayer != null) {
-            mediaPlayer.start();
-        }
+                imv.setVisibility(View.VISIBLE);
+                imv.startAnimation(fadeIn);
+                imv.startAnimation(fadeOut);
+                if (mediaPlayer != null) {
+                    mediaPlayer.start();
+                }
+            }
+        }, 1500); // Задержка в 3000 миллисекунд (3 секунды)
+
+
+
 
     }
     public void User() {
