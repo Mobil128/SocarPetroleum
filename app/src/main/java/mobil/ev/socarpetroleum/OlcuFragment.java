@@ -196,7 +196,7 @@ public class OlcuFragment extends Fragment {
     }
 
     private void init() {
-        mediaPlayer = MediaPlayer.create(getContext(), R.raw.ssoo);
+        mediaPlayer = MediaPlayer.create(getContext(), R.raw.olcu_saxlanildi1);
         imv =(ImageView) v.findViewById(R.id.chhht);
         bos_yer=(ImageView) v.findViewById(R.id.bos_yer);
         tv_tarix=(TextView)v.findViewById(R.id.Tarix);
@@ -217,9 +217,8 @@ public class OlcuFragment extends Fragment {
 
     }
     public void Gonder(){
-        Hesabla();
-        saxlanib_he_yox=true;
-        Toast.makeText(getContext(),"Hesablandı", Toast.LENGTH_SHORT).show();
+
+        Saxla();
         View rootView = getView();
         if (rootView != null) {
             Bitmap screenshot = captureScreenshot(rootView);
@@ -339,6 +338,9 @@ public class OlcuFragment extends Fragment {
         myRefX.push().setValue(map1);
 
       //  Toast.makeText(getContext(),"Saxlandı", Toast.LENGTH_SHORT).show();
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
+        }
         AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
         fadeIn.setDuration(500);
 
