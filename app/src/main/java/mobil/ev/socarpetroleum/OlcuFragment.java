@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,6 +39,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,7 +51,7 @@ import java.util.Map;
 
 public class OlcuFragment extends Fragment {
     int[] bos_yer_s= new int[10];
-    ImageView hesabla,saxla,yenile,sexs,bos_yer;
+    ImageView gonder,saxla,yenile,sexs,bos_yer;
     String date_n="";
     String hesablanan[][]=new String[20][20];
     boolean saxlanib_he_yox=false;
@@ -86,10 +93,10 @@ public class OlcuFragment extends Fragment {
 
             }
         });
-        hesabla.setOnClickListener(new View.OnClickListener() {
+        gonder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              Hesabla();
+              Gonder();
             }
         });
         saxla.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +122,49 @@ public class OlcuFragment extends Fragment {
         setImage(sexs,httpsReference);
         return v;
 
+    }
+
+
+    private Bitmap captureScreenshot(View view) {
+        view.setDrawingCacheEnabled(true);
+        view.buildDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+        view.setDrawingCacheEnabled(false);
+        return bitmap;
+    }
+
+    private File saveBitmapToFile(Bitmap bitmap) throws IOException {
+        String fileName = "screenshot.png";
+        File directory = new File(Environment.getExternalStorageDirectory() + "/Pictures/");
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+        File file = new File(directory, fileName);
+        FileOutputStream fos = new FileOutputStream(file);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        fos.flush();
+        fos.close();
+        return file;
+    }
+
+    private void shareImageOnWhatsApp(File file) {
+        Uri uri = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".provider", file);
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("image/*");
+        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        shareIntent.setPackage("com.whatsapp");
+
+        // Разрешить приложению, которое будет получать файл, доступ к URI
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        try {
+            startActivity(shareIntent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            //  Toast.makeText(getContext(), "WhatsApp quraşdırılmayıb", Toast.LENGTH_SHORT).show();
+            shareIntent.setPackage("com.whatsapp.w4b");
+            startActivity(shareIntent);
+        }
     }
     public final static Bitmap Bytes2Bitmap(byte[] b) {
         if (b == null) {
@@ -156,7 +206,7 @@ public class OlcuFragment extends Fragment {
         adapter = new MyArrayAdapter(getContext(), list);
         listView = (ListView) v.findViewById(R.id.lv_tanker);
         listView.setAdapter(adapter);
-        hesabla = (ImageView) v.findViewById(R.id.hesabla);
+        gonder = (ImageView) v.findViewById(R.id.hesabla);
         saxla = (ImageView) v.findViewById(R.id.saxla);
         yenile = (ImageView) v.findViewById(R.id.yenile);
         sexs = (ImageView) v.findViewById(R.id.imageView);
@@ -166,10 +216,21 @@ public class OlcuFragment extends Fragment {
 
 
     }
-    public void Duzelt(){
+    public void Gonder(){
         Hesabla();
         saxlanib_he_yox=true;
         Toast.makeText(getContext(),"Hesablandı", Toast.LENGTH_SHORT).show();
+        View rootView = getView();
+        if (rootView != null) {
+            Bitmap screenshot = captureScreenshot(rootView);
+
+            try {
+                File file = saveBitmapToFile(screenshot);
+                shareImageOnWhatsApp(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
 
     }
