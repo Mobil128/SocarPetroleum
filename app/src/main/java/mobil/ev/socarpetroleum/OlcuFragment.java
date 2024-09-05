@@ -2,19 +2,27 @@ package mobil.ev.socarpetroleum;
 
 
 
+
+
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
+import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.CheckBox;
@@ -25,7 +33,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
@@ -51,6 +58,7 @@ import java.util.Map;
 
 
 public class OlcuFragment extends Fragment {
+    private static final int REQUEST_CODE_PERMISSIONS = 101;
     int[] bos_yer_s= new int[10];
     ImageView gonder,saxla,yenile,sexs,bos_yer;
     String date_n="";
@@ -69,6 +77,22 @@ public class OlcuFragment extends Fragment {
     MediaPlayer mediaPlayer;
 
     ImageView  imv;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Запрос разрешений для Android 33+ (API 33)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(new String[]{Manifest.permission.READ_MEDIA_IMAGES}, REQUEST_CODE_PERMISSIONS);
+        } else {
+            requestPermissions(new String[]{
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+            }, REQUEST_CODE_PERMISSIONS);
+        }
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -94,6 +118,11 @@ public class OlcuFragment extends Fragment {
 
             }
         });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(new String[]{
+                    android.Manifest.permission.READ_MEDIA_IMAGES
+            }, 101);
+        }
         gonder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,48 +155,6 @@ public class OlcuFragment extends Fragment {
     }
 
 
-    private Bitmap captureScreenshot(View view) {
-        view.setDrawingCacheEnabled(true);
-        view.buildDrawingCache();
-        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
-        view.setDrawingCacheEnabled(false);
-        return bitmap;
-    }
-
-    private File saveBitmapToFile(Bitmap bitmap) throws IOException {
-        String fileName = "screenshot.png";
-        File directory = new File(Environment.getExternalStorageDirectory() + "/Pictures/");
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-        File file = new File(directory, fileName);
-        FileOutputStream fos = new FileOutputStream(file);
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        fos.flush();
-        fos.close();
-        return file;
-    }
-
-    private void shareImageOnWhatsApp(File file,String message) {
-        Uri uri = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".provider", file);
-
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("image/*");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, message);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-        shareIntent.setPackage("com.whatsapp");
-
-        // Разрешить приложению, которое будет получать файл, доступ к URI
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        try {
-            startActivity(shareIntent);
-        } catch (android.content.ActivityNotFoundException ex) {
-            //  Toast.makeText(getContext(), "WhatsApp quraşdırılmayıb", Toast.LENGTH_SHORT).show();
-            shareIntent.setPackage("com.whatsapp.w4b");
-            startActivity(shareIntent);
-        }
-    }
     public final static Bitmap Bytes2Bitmap(byte[] b) {
         if (b == null) {
             return null;
@@ -218,21 +205,88 @@ public class OlcuFragment extends Fragment {
 
 
     }
+    // Метод для захвата скриншота
+    public void captureScreenshot(Window window, View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            view.post(() -> {
+                Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+                PixelCopy.request(window, bitmap, (copyResult) -> {
+                    if (copyResult == PixelCopy.SUCCESS) {
+                        File screenshotFile = saveBitmap(bitmap);
+                        String message = ("Salam"+"\n"+"\n"+"Cənlərdə qalan boş yer"+"\n"+"Ai92-"+(150000-bos_yer_s[0])+"\n"+"Dizel-"+(100000-bos_yer_s[1])+"\n"+"Premium-"+(25000-bos_yer_s[2])+"\n"+"Super-"+(10000-bos_yer_s[3])+"\n"+"LPG-"+(30000-bos_yer_s[4]));
+
+                        sendImageAndTextViaWhatsAppOrBusiness(screenshotFile, message);
+                    }
+                }, new Handler(Looper.getMainLooper()));
+            });
+        }
+    }
+    // Метод для сохранения скриншота в файл
+    public File saveBitmap(Bitmap bitmap) {
+        String fileName = "screenshot_" + System.currentTimeMillis() + ".png";
+        File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Screenshots");
+
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        File file = new File(dir, fileName);
+        try (FileOutputStream out = new FileOutputStream(file)) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            return file;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    // Метод для проверки наличия приложений WhatsApp и WhatsApp Business
+    public boolean isAppInstalled(String packageName) {
+        PackageManager pm = requireContext().getPackageManager();
+        try {
+            pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+    // Метод для отправки изображения и текста через WhatsApp или WhatsApp Business
+    public void sendImageAndTextViaWhatsAppOrBusiness(File imageFile, String textMessage) {
+        if (imageFile == null) return;
+
+        Uri imageUri = FileProvider.getUriForFile(requireContext(), "com.example.yourapp.fileprovider", imageFile);
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.setType("image/*");
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, textMessage);
+
+        // Проверяем наличие приложений WhatsApp и WhatsApp Business
+        if (isAppInstalled("com.whatsapp")) {
+            shareIntent.setPackage("com.whatsapp");
+        } else if (isAppInstalled("com.whatsapp.w4b")) {  // WhatsApp Business
+            shareIntent.setPackage("com.whatsapp.w4b");
+        } else {
+            // Если ни одно из приложений не установлено, выводим сообщение
+            startActivity(Intent.createChooser(shareIntent, "Proqram seçin"));
+            return;
+        }
+
+        startActivity(shareIntent);
+    }
+
+    // Обработка результатов запроса разрешений
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Обработка разрешений, если нужно
+    }
     public void Gonder(){
 
         Saxla();
-        View rootView = getView();
-        if (rootView != null) {
-            Bitmap screenshot = captureScreenshot(rootView);
+        Window window = requireActivity().getWindow();
+        View rootView = window.getDecorView().getRootView();
+        captureScreenshot(window, rootView);
 
-            try {
-                File file = saveBitmapToFile(screenshot);
-                String message = "Cənlərdə qalan boş yer"+"\n"+"Ai92-"+(150000-bos_yer_s[0])+"\n"+"Dizel-"+(100000-bos_yer_s[1])+"\n"+"Premium-"+(25000-bos_yer_s[2])+"\n"+"Super-"+(10000-bos_yer_s[3])+"\n"+"LPG-"+(30000-bos_yer_s[4]);
-                shareImageOnWhatsApp(file,message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
 
 
     }
@@ -348,7 +402,6 @@ public class OlcuFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Код, который будет выполнен с задержкой
                 AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
                 fadeIn.setDuration(500);
 
@@ -359,7 +412,8 @@ public class OlcuFragment extends Fragment {
 
                 fadeOut.setAnimationListener(new Animation.AnimationListener() {
                     @Override
-                    public void onAnimationStart(Animation animation) {}
+                    public void onAnimationStart(Animation animation) {
+                    }
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
@@ -367,7 +421,8 @@ public class OlcuFragment extends Fragment {
                     }
 
                     @Override
-                    public void onAnimationRepeat(Animation animation) {}
+                    public void onAnimationRepeat(Animation animation) {
+                    }
                 });
       /*  mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -383,12 +438,9 @@ public class OlcuFragment extends Fragment {
                     mediaPlayer.start();
                 }
             }
-        }, 1500); // Задержка в 3000 миллисекунд (3 секунды)
+        }, 1500);
+            }
 
-
-
-
-    }
     public void User() {
 
         Intent intent = new Intent(getContext().getApplicationContext(),User.class);
