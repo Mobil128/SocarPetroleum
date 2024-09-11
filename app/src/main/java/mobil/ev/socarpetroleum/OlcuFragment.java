@@ -290,7 +290,7 @@ public class OlcuFragment extends Fragment {
 
 
     }
-    private  void Hesabla(){
+    public   void Hesabla(){
 
 
 

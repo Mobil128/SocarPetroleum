@@ -61,6 +61,9 @@ public class MyArrayAdapter extends ArrayAdapter < MyDataModel > {
         vh.textViewCemi.setText(item.getCemi());
       if(item.getOn_off().equals("true")){
         vh.checkBox.setChecked(true);}
+
+
+
         return vh.rootView;
     }
 
