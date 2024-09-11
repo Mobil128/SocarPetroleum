@@ -71,7 +71,8 @@ public class OlcuFragment extends Fragment {
     private MyArrayAdapter adapter;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("YDM");
-    String cenlerin_sayi="1";String yanacaq_sayi="1";
+    String cenlerin_sayi="1";
+    String yanacaq_sayi="1";
     String[] yan_novu = new String[10];
     String[] yan_novu_sayi =new String[10];
     MediaPlayer mediaPlayer;
@@ -464,7 +465,10 @@ public class OlcuFragment extends Fragment {
                     int ii=i+10;
                     yan_novu_sayi[i]=dss.child(String.valueOf(String.valueOf(ii))).getValue().toString();
                 }
-
+                UserInfo.setCenlerin_sayi(cenlerin_sayi);
+                UserInfo.setYanacaq_sayi(yanacaq_sayi);
+                UserInfo.setYan_novu(yan_novu);
+                UserInfo.setYan_novu_sayi(yan_novu_sayi);
             }
         });
 

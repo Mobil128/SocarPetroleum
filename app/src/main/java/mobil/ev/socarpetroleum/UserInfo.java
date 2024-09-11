@@ -15,6 +15,46 @@ public class UserInfo {
     public static String user_key;
     public static String user_ydm;
     public static String user_email;
+    public static String cenlerin_sayi;
+    public static String yanacaq_sayi;
+
+    public static String[] getYan_novu() {
+        return yan_novu;
+    }
+
+    public static String[] getYan_novu_sayi() {
+        return yan_novu_sayi;
+    }
+
+    public static String[] yan_novu;
+
+    public static void setYan_novu_sayi(String[] yan_novu_sayi) {
+        UserInfo.yan_novu_sayi = yan_novu_sayi;
+    }
+
+    public static void setYan_novu(String[] yan_novu) {
+        UserInfo.yan_novu = yan_novu;
+    }
+
+    public static String[] yan_novu_sayi ;
+    public static String getCenlerin_sayi() {
+        return cenlerin_sayi;
+    }
+
+    public static String getYanacaq_sayi() {
+        return yanacaq_sayi;
+    }
+
+    public static void setCenlerin_sayi(String cenlerin_sayi) {
+        UserInfo.cenlerin_sayi = cenlerin_sayi;
+    }
+
+    public static void setYanacaq_sayi(String yanacaq_sayi) {
+        UserInfo.yanacaq_sayi = yanacaq_sayi;
+    }
+
+
+
 
 
 

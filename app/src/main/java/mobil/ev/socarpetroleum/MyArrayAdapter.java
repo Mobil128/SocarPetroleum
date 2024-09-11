@@ -2,9 +2,6 @@ package mobil.ev.socarpetroleum;
 
 
 import android.content.Context;
-import android.content.Entity;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -13,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -61,6 +58,41 @@ public class MyArrayAdapter extends ArrayAdapter < MyDataModel > {
         vh.textViewCemi.setText(item.getCemi());
       if(item.getOn_off().equals("true")){
         vh.checkBox.setChecked(true);}
+
+
+
+        // Remove any previous TextWatcher
+        if (vh.textViewMetrostok.getTag() instanceof TextWatcher) {
+            vh.textViewMetrostok.removeTextChangedListener((TextWatcher) vh.textViewMetrostok.getTag());
+        }
+
+        // Add a TextWatcher to update the TextView "textViewCemi" when "textViewMetrostok" changes
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Update the "Cemi" TextView based on the new value in "Metrostok"
+                String newText = s.toString();
+                if(newText.equals("")){newText="0";}
+                Kalibrovka kalibrovka= new Kalibrovka();
+
+                String newText2 = kalibrovka.getValue(UserInfo.getUser_ydm(),1, newText,2,Integer.parseInt(UserInfo.getCenlerin_sayi()));
+                vh.textViewHecm.setText(newText2); // Or perform any specific logic you need
+
+            }
+        };
+
+        // Set the TextWatcher and save it in the tag to avoid duplications
+        vh.textViewMetrostok.addTextChangedListener(textWatcher);
+        vh.textViewMetrostok.setTag(textWatcher);
+
 
 
 
