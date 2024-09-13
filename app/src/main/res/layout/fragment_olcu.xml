@@ -173,7 +173,8 @@
 
                 android:tint="@color/lavender"
                 android:tintMode="multiply"
-                app:srcCompat="@android:drawable/ic_menu_rotate" />
+                app:srcCompat="@android:drawable/ic_menu_rotate"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/bos_yer"
@@ -183,7 +184,8 @@
 
                 android:tint="@color/lavender"
                 android:tintMode="multiply"
-                app:srcCompat="@drawable/baseline_playlist_add_circle_24" />
+                app:srcCompat="@drawable/baseline_playlist_add_circle_24"
+                android:visibility="gone" />
 
         </LinearLayout>
 

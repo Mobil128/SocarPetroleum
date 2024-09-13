@@ -6,6 +6,7 @@ package mobil.ev.socarpetroleum;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -32,6 +33,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -57,7 +59,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class OlcuFragment extends Fragment {
+public class OlcuFragment extends Fragment implements MyArrayAdapter.OnItemChangeListener {
     private static final int REQUEST_CODE_PERMISSIONS = 101;
     int[] bos_yer_s= new int[10];
     ImageView gonder,saxla,yenile,sexs,bos_yer;
@@ -91,6 +93,8 @@ public class OlcuFragment extends Fragment {
                     Manifest.permission.READ_EXTERNAL_STORAGE
             }, REQUEST_CODE_PERMISSIONS);
         }
+
+
     }
 
 
@@ -193,7 +197,7 @@ public class OlcuFragment extends Fragment {
         tv_olcu_aparan=(TextView)v.findViewById(R.id.olcu_sexs);
         tv_ydm = (TextView)v.findViewById(R.id.tv_ydm) ;
         list = new ArrayList< >();
-        adapter = new MyArrayAdapter(getContext(), list);
+        adapter = new MyArrayAdapter(getContext(), list,this);
         listView = (ListView) v.findViewById(R.id.lv_tanker);
         listView.setAdapter(adapter);
         gonder = (ImageView) v.findViewById(R.id.hesabla);
@@ -395,7 +399,7 @@ public class OlcuFragment extends Fragment {
         myRef.push().setValue(map);
         myRefX.push().setValue(map1);
 
-      //  Toast.makeText(getContext(),"Saxlandı", Toast.LENGTH_SHORT).show();
+        //  Toast.makeText(getContext(),"Ölçü axlanıldı", Toast.LENGTH_SHORT).show();
 
         Handler handler = new Handler();
 
@@ -509,5 +513,81 @@ public class OlcuFragment extends Fragment {
 
 
     }
+
+    @Override
+    public void onItemChanged(int position, String newValue) {
+        // Действия при изменении элемента в EditText
+       // Toast.makeText(getContext(), "Позиция: " + position + ", Новое значение: " + newValue, Toast.LENGTH_SHORT).show();
+        Hesabla();
+        // Можно обновить данные модели или выполнить любые другие действия
+    }
+
+ /* @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Hərəkəti təsdiqləyin")
+                        .setMessage("Çıxmadan əvvəl dəyişiklikləri saxlamaq istəyirsiniz?")
+                        .setPositiveButton("saxla", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Сохранить данные
+                                Saxla();
+                                // Закрыть фрагмент
+                                getParentFragmentManager().popBackStack();
+                            }
+                        })
+                        .setNegativeButton("Saxlama", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Закрыть фрагмент без сохранения
+                                getParentFragmentManager().popBackStack();
+                            }
+                        })
+                        .setCancelable(false)
+                        .show();
+            }
+        });
+    }*/
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Показываем диалог для подтверждения сохранения данных
+     //   showSaveConfirmationDialog();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+       // showSaveConfirmationDialog();
+        // Вы можете также вызывать диалог в onStop(), если необходимо
+    }
+
+    private void showSaveConfirmationDialog() {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Hərəkəti təsdiqləyin")
+                .setMessage("Çıxmadan əvvəl dəyişiklikləri saxlamaq istəyirsiniz?")
+                .setPositiveButton("Saxla", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Метод сохранения данных
+                        Saxla();
+                    }
+                })
+                .setNegativeButton("Saxlama", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Пользователь отказался сохранять данные
+                        dialog.dismiss();
+                    }
+                })
+                .setCancelable(false)  // Не позволяет закрыть диалог нажатием вне его
+                .show();
+    }
+
+
 
 }

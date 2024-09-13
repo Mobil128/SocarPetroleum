@@ -22,8 +22,23 @@ public class MyArrayAdapter extends ArrayAdapter < MyDataModel > {
     Context context;
     private LayoutInflater mInflater;
 
+    // Интерфейс для вызова метода в активности
+    public interface OnItemChangeListener {
+        void onItemChanged(int position, String newValue);
+    }
+
+    private OnItemChangeListener listener;
+
     // Constructors
-    public MyArrayAdapter(Context context, List < MyDataModel > objects) {
+    public MyArrayAdapter(Context context, List<MyDataModel> objects, OnItemChangeListener listener) {
+        super(context, 0, objects);
+        this.context = context;
+        this.mInflater = LayoutInflater.from(context);
+        modelList = objects;
+        this.listener = listener; // Передаем слушатель
+    }
+    // Constructors
+    public MyArrayAdapter(Context context, List<MyDataModel> objects) {
         super(context, 0, objects);
         this.context = context;
         this.mInflater = LayoutInflater.from(context);
@@ -79,12 +94,19 @@ public class MyArrayAdapter extends ArrayAdapter < MyDataModel > {
             @Override
             public void afterTextChanged(Editable s) {
                 // Update the "Cemi" TextView based on the new value in "Metrostok"
+                int currentPosition = 8;
                 String newText = s.toString();
+
+                // Вызов метода активности через интерфейс
+                if (listener != null) {
+                    listener.onItemChanged(currentPosition, newText);
+                    }
+               /* String newText = s.toString();
                 if(newText.equals("")){newText="0";}
                 Kalibrovka kalibrovka= new Kalibrovka();
 
                 String newText2 = kalibrovka.getValue(UserInfo.getUser_ydm(),1, newText,2,Integer.parseInt(UserInfo.getCenlerin_sayi()));
-                vh.textViewHecm.setText(newText2); // Or perform any specific logic you need
+                vh.textViewHecm.setText(newText2); // Or perform any specific logic you need*/
 
             }
         };

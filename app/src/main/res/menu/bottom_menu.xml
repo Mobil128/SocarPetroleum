@@ -4,14 +4,16 @@
         android:icon= "@drawable/baseline_list_24"
         android:title="Son"/>
 
-    <item android:id="@+id/but_ol"
-        android:icon= "@drawable/baseline_list_24"
-        android:title="Bütün"/>
+    <item
+        android:id="@+id/but_ol"
+        android:icon="@drawable/baseline_list_24"
+        android:title="Hamısı" />
 
 
-    <item android:id="@+id/sifaris"
-        android:icon= "@drawable/gazgolder2"
-        android:title="Yanacaq qəbulu"/>
+    <item
+        android:id="@+id/sifaris"
+        android:icon="@drawable/gazgolder2"
+        android:title="Socar" />
 
     <item android:id="@+id/tenz"
         android:icon= "@drawable/baseline_lock_24"

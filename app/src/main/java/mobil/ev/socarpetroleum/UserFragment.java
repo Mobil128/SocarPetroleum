@@ -20,7 +20,7 @@ public class UserFragment extends Fragment {
         // Inflate the layout for this fragment
         v=inflater.inflate(R.layout.fragment_user, container, false);
         WebView webView = (WebView) v.findViewById(R.id.webview);
-        webView.loadUrl("https://docs.google.com/forms/d/e/1FAIpQLSePZGIlYIUv6yXsniSjGESPsT0f_nR_7abdf2RkXQ2S3cuqFQ/viewform?vc=0&c=0&w=1&flr=0");
+        webView.loadUrl("https://script.google.com/macros/s/AKfycbxRKSJ_wWq2RMaI_JaoI0bj7ikIgcVbSprdral6RkM/dev");
         return v;
 
     }
