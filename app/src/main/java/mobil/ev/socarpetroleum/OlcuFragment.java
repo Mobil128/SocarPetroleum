@@ -218,14 +218,28 @@ public class OlcuFragment extends Fragment implements MyArrayAdapter.OnItemChang
                 PixelCopy.request(window, bitmap, (copyResult) -> {
                     if (copyResult == PixelCopy.SUCCESS) {
                         File screenshotFile = saveBitmap(bitmap);
-                        String message = ("Salam"+"\n"+"\n"+"Cənlərdə qalan boş yer"+"\n"+"Ai92-"+(150000-bos_yer_s[0])+"\n"+"Dizel-"+(100000-bos_yer_s[1])+"\n"+"Premium-"+(25000-bos_yer_s[2])+"\n"+"Super-"+(10000-bos_yer_s[3])+"\n"+"LPG-"+(30000-bos_yer_s[4]));
-
+                        String message =BosYer();
                         sendImageAndTextViaWhatsAppOrBusiness(screenshotFile, message);
                     }
                 }, new Handler(Looper.getMainLooper()));
             });
         }
     }
+
+    private String BosYer() {
+        String message="";
+        String message1 = ("Salam"+"\n"+"\n"+"Cənlərdə qalan boş yer"+"\n"+"Ai92-"+(150000-bos_yer_s[0])+"\n"+"Dizel-"+(100000-bos_yer_s[1])+"\n"+"Premium-"+(25000-bos_yer_s[2])+"\n"+"Super-"+(10000-bos_yer_s[3])+"\n"+"LPG-"+(30000-bos_yer_s[4]));
+        String message2 = ("Salam"+"\n"+"\n"+"Cənlərdə qalan boş yer"+"\n"+"Ai92-"+(150000-bos_yer_s[0])+"\n"+"Dizel-"+(50000-bos_yer_s[1])+"\n"+"Premium-"+(50000-bos_yer_s[2])+"\n"+"Super-"+(17700-bos_yer_s[3])+"\n"+"LPG-"+(30000-bos_yer_s[4]));
+        if(UserInfo.getUser_ydm().equals("03i")){
+            message=message1;
+        }
+        if(UserInfo.getUser_ydm().equals("12")){
+            message=message2;
+        }
+
+        return message;
+    }
+
     // Метод для сохранения скриншота в файл
     public File saveBitmap(Bitmap bitmap) {
         String fileName = "screenshot_" + System.currentTimeMillis() + ".png";
